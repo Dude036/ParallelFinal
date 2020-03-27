@@ -1,0 +1,35 @@
+Subset Sum Problem - Parallel Dynamic Programming
+
+Definitions:
+    Int_Set := A set of random integers within a given range. Size N
+    N := the number of elements in the set 
+    Target := the target Sum
+    Cache := the Cache of answers. A 2D array of size NxTarget of bools.
+    Rank, Size := as defined by MPI
+
+Sub-Problems:
+    Initialization: -Caleb
+        -Process 0 creates Int_Set and populates it with random integers in [0, 2N]
+        -Process 0 creates Target in [.5*N^2, N^2]
+        -Process 0 sends Int_Set and Target to all other Processes
+        -Each process initializes Cache
+            -0th column is all True (any set can have a subset sum of 0 due to empty set)
+            -0th row is all false except 0 and Int_Set[0] columns (set of 1 int can make sum 0 and only value)
+
+    Dynamic Programming: -Caleb
+        -Cache must be computed row by row. 
+        -Each process computes columns [Rank*(x),Rank*(x)+x] where x := T / Size
+        -Upon completion, Process 0 returns results.
+
+    Synchronized Message Passing: -Josh
+        -On each row, once the processes are done computing, they must share their results.
+        -Each process fills in the Cache with the results from the other processes. 
+        -The Cache on every process must by up to date and identical to the others before proceeding to compute next row.
+
+Possible Extenstions:
+    Traceback: -Caleb
+        Which subset produced our target sum?
+    Closest Sum: -Josh
+        If there is no subset with sum == Target, what is the closest we could get?
+
+
