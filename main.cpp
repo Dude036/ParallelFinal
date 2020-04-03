@@ -140,22 +140,32 @@ int main(int argc, char *argv[]) {
     // }
 
     if(mpi_rank == MASTER){
+    	std::vector<int> subset;
         if(subset_grid[set_size-1][target]) {
-            std::vector<int> subset = traceback(subset_grid, set, set_size-1, target);
-            int total = 0;
-            std::cout << "\nThere is a subset which sums to " << target << ".\n";
-            std::string output = "{";
-            for (int i = 0; i < subset.size(); i++) {
-                output += std::to_string(subset[i]) + ", ";
-                total += subset[i];
-            }
-            std::cout << output << "}" << std::endl;
-            std::cout << "Verified total is " << total << std::endl << std::endl;
+            subset = traceback(subset_grid, set, set_size-1, target);
         } else {
             // THERE WAS NO COMBINATION TO EQUAL THE TARGET SUM
             // EXECUTE "CLOSEST SUM" EXTENSION
             // FEEL FREE TO USE TRACEBACK TO SHOW THE CLOSEST SUM SUBSET
+            for (int x = target; x > 0; x--) {
+            	if (subset_grid[set_size-1][x]) {
+            		subset = traceback(subset_grid, set, set_size-1, x);
+            		break;
+            	}
+            }
         }
+    	// Print things
+        int total = 0;
+        std::cout << "\nThere is a subset which sums to " << target << ".\n";
+        std::string output = "{";
+        for (int i = 0; i < subset.size(); i++) {
+            output += std::to_string(subset[i]) + ", ";
+            total += subset[i];
+        }
+        std::cout << output << "}" << std::endl;
+        if (total == target) {
+	        std::cout << "Verified total is " << total << std::endl << std::endl;
+	    }
     }
 
 	// Deallocate variable pointers
