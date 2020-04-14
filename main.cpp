@@ -150,6 +150,8 @@ int main(int argc, char *argv[]) {
             for (int x = target; x > 0; x--) {
             	if (subset_grid[set_size-1][x]) {
             		subset = traceback(subset_grid, set, set_size-1, x);
+                    std::cout << "\nThere is not a subset which sums to " << target << ".\nHowever, ";
+                    target = x;
             		break;
             	}
             }
